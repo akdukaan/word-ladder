@@ -68,6 +68,7 @@ public class Main {
                             queue1.add(s);
                             reachedWords1.put(s, current1);
                             if (reachedWords2.containsKey(s)) {
+                                reachedWords2.put(current1, s);
                                 printPath(current1);
                                 return;
                             }
@@ -79,6 +80,7 @@ public class Main {
                             queue2.add(s);
                             reachedWords2.put(s, current2);
                             if (reachedWords1.containsKey(current2)) {
+                                reachedWords1.put(current2, s);
                                 printPath(s);
                                 return;
                             }
