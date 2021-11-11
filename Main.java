@@ -9,7 +9,7 @@ import java.net.URLConnection;
 import java.util.*;
 
 public class Main {
-    private static HashSet<String> dictionary = new HashSet<>();
+    private static final HashSet<String> dictionary = new HashSet<>();
     private static HashMap<String, String> reachedWords1 = new HashMap<>();
     private static HashMap<String, String> reachedWords2 = new HashMap<>();
 
@@ -21,38 +21,19 @@ public class Main {
         printWordLadder("would", "other");
         printWordLadder("three", "place");
         printWordLadder("again", "still");
-        printWordLadder("hound", "round");
-
+        printWordLadder("hound", "sound");
     }
 
-    public static void printLeftPath(String word) {
-        Stack<String> stack = new Stack<>();
-        while (word != null) {
-            stack.add(word);
-            word = reachedWords1.get(word);
-        }
-        while (!stack.isEmpty()) {
-            String pop = stack.pop();
-            if (!stack.isEmpty()) {
-                System.out.print(pop + " -> ");
-            }
-        }
-    }
+    public static void initializeDictionary() throws IOException {
+        URL url = new URL("https://www-cs-faculty.stanford.edu/~knuth/sgb-words.txt");
+        URLConnection con = url.openConnection();
+        InputStream is = con.getInputStream();
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        String line;
 
-    public static void printRightPath(String word) {
-        while (word != null) {
-            System.out.print(word);
-            word = reachedWords2.get(word);
-            if (word != null) {
-                System.out.print(" -> ");
-            }
+        while ((line = br.readLine()) != null) {
+            dictionary.add(line);
         }
-    }
-
-    public static void printPath(String centerWord) {
-        printLeftPath(centerWord);
-        printRightPath(centerWord);
-        System.out.println("\n");
     }
 
     public static void printWordLadder(String start, String end) {
@@ -86,6 +67,10 @@ public class Main {
                         if (dictionary.contains(s) && !reachedWords1.containsKey(s)) {
                             queue1.add(s);
                             reachedWords1.put(s, current1);
+                            if (reachedWords2.containsKey(s)) {
+                                printPath(current1);
+                                return;
+                            }
                         }
                     }
                     if (c != current2.charAt(i)) {
@@ -93,23 +78,45 @@ public class Main {
                         if (dictionary.contains(s) && !reachedWords2.containsKey(s)) {
                             queue2.add(s);
                             reachedWords2.put(s, current2);
+                            if (reachedWords1.containsKey(current2)) {
+                                printPath(s);
+                                return;
+                            }
                         }
                     }
                 }
             }
         }
-        System.out.println("There exists no possible path between " + start + " and " + end + ".\n");
+        System.out.println("No path between " + start + " and " + end + " exists.\n");
     }
 
-    public static void initializeDictionary() throws IOException {
-        URL url = new URL("https://www-cs-faculty.stanford.edu/~knuth/sgb-words.txt");
-        URLConnection con = url.openConnection();
-        InputStream is = con.getInputStream();
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        String line;
+    public static void printPath(String centerWord) {
+        printLeftPath(centerWord);
+        printRightPath(centerWord);
+        System.out.println("\n");
+    }
 
-        while ((line = br.readLine()) != null) {
-            dictionary.add(line);
+    public static void printLeftPath(String word) {
+        Stack<String> stack = new Stack<>();
+        while (word != null) {
+            stack.add(word);
+            word = reachedWords1.get(word);
+        }
+        while (!stack.isEmpty()) {
+            String pop = stack.pop();
+            if (!stack.isEmpty()) {
+                System.out.print(pop + " -> ");
+            }
+        }
+    }
+
+    public static void printRightPath(String word) {
+        while (word != null) {
+            System.out.print(word);
+            word = reachedWords2.get(word);
+            if (word != null) {
+                System.out.print(" -> ");
+            }
         }
     }
 }
