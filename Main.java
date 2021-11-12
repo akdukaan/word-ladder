@@ -14,12 +14,12 @@ public class Main {
     private static final HashSet<String> dictionary = new HashSet<>();
 
     // Create hashmaps to keep track of words that we have already reached
-    private static HashMap<String, String> reachedWords1 = new HashMap<>();
-    private static HashMap<String, String> reachedWords2 = new HashMap<>();
+    private static HashMap<String, String> reachedWords1;
+    private static HashMap<String, String> reachedWords2;
 
     // Create queues to keep track of the words we need to expand
-    private static Queue<String> queue1 = new PriorityQueue<>();
-    private static Queue<String> queue2 = new PriorityQueue<>();
+    private static Queue<String> queue1;
+    private static Queue<String> queue2;
 
     /**
      * @param args
@@ -99,7 +99,7 @@ public class Main {
 
     /**
      * Expands the word into the queue. If we complete the path, it prints the path.
-     * @param word the word that will be epanded
+     * @param word the word that will be expanded
      * @param thisMap the hashmap representing the reached words on this side
      * @param otherMap the hashmap representing the reached words on the other side
      * @param queue the queue for this side
